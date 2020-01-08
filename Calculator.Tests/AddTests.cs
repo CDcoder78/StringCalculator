@@ -18,14 +18,15 @@ namespace Calculator.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NumbersExceededException))]
-        public void NumbersExceededExceptionTest()
+        public void Sum78Test()
         {
-            var input = "1,1,1";
+            var input = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12";
 
-            _parser.Setup(a => a.ParseIntegers(input)).Returns(new int[] { 1, 1, 1 });
+            _parser.Setup(a => a.ParseIntegers(input)).Returns(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
 
-            _target.Compute(input);                        
+            var result = _target.Compute(input);
+
+            Assert.AreEqual("1+2+3+4+5+6+7+8+9+10+11+12 = 78", result);
         }
 
 
@@ -44,7 +45,7 @@ namespace Calculator.Tests
         [TestMethod]
         public void Valid1InputTest()
         {
-            var input = "1.5000";
+            var input = "1,5000";
 
             _parser.Setup(a => a.ParseIntegers(input)).Returns(new int[] { 1, 5000 });
 

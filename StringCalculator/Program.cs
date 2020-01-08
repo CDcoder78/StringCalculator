@@ -11,7 +11,6 @@ namespace StringCalculator
             @"*********************************************
 *        String Calculator - exit: Ctrl+C   *
 *        Supported: delimiters ','          *
-*        Maximum numbers:     2             *
 *        Mode: Addition                     *
 *********************************************";
 
@@ -42,30 +41,32 @@ namespace StringCalculator
                 Console.ForegroundColor = defaultColor;
             }
 
-            while (!done)
+            try
             {
-                PrintMenu();
-
-                try
+                while (!done)
                 {
-                    var input = Console.ReadLine();
+                    PrintMenu();
 
-                    if (input != null)
+                    try
                     {
+                        var input = Console.ReadLine();
+
+                        if (input == null)
+                            break;
+                        
                         Console.WriteLine($"{container.GetInstance<IAdd>().Compute(input)}");
                     }
-                }
-                catch (Exception e)
-                {
-                    if(!done)
+                    catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        if (!done) Console.WriteLine(e);
                     }
                 }
             }
-
-            // set the color for the console back to the default
-            Console.ForegroundColor = defaultColor;
+            finally
+            {
+                // set the color for the console back to the default
+                Console.ForegroundColor = defaultColor;
+            }
         }
     }
 }

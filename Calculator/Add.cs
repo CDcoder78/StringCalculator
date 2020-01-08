@@ -9,8 +9,6 @@ namespace Calculator
     {
         private const char AdditionSymbol = '+';
         private const char EqualsSymbol = '=';
-        private const int DefaultMaximumNumbers = 2;
-        private readonly int _maximumNumbers;
         private readonly IParser _parser;
 
         /// <summary>
@@ -20,7 +18,6 @@ namespace Calculator
         public Add(IParser parser)
         {
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
-            _maximumNumbers = DefaultMaximumNumbers;
         }
 
         /// <summary>
@@ -31,8 +28,6 @@ namespace Calculator
         public string Compute(string input)
         {
             var args = _parser.ParseIntegers(input);
-
-            if (args.Length > _maximumNumbers) throw new NumbersExceededException(_maximumNumbers, args.Length);
 
             var formula = new StringBuilder();
             formula.Append(args[0]);
