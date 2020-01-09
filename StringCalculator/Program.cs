@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Calculator;
 using Calculator.Contracts;
 using SimpleInjector;
@@ -8,11 +9,11 @@ namespace StringCalculator
     public class Program
     {
         private const string _menuText =
-            @"*********************************************
-*        String Calculator - exit: Ctrl+C   *
-*        Supported: delimiters ','          *
-*        Mode: Addition                     *
-*********************************************";
+            @"**********************************************
+* String Calculator - exit: Ctrl+C           *
+* Supported: delimiters {0}        *
+* Mode: Addition                             *
+**********************************************";
 
         private static void Main(string[] args)
         {
@@ -21,8 +22,8 @@ namespace StringCalculator
 
             // Stretch goal #4 DI IoC container
             var container = new Container();
-            container.Register<IParser, Parser>();
-            container.Register<IAdd, Add>();
+            container.Register<IParser, Parser>(Lifestyle.Singleton);
+            container.Register<IAdd, Add>(Lifestyle.Singleton);
             container.Verify();
 
             // Stretch goal #2 exit with Ctrl+C
@@ -36,7 +37,7 @@ namespace StringCalculator
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
-                Console.WriteLine(_menuText);
+                Console.WriteLine(_menuText, container.GetInstance<IParser>().GetDelimiters());
 
                 Console.ForegroundColor = defaultColor;
             }
@@ -54,7 +55,7 @@ namespace StringCalculator
                         if (input == null)
                             break;
                         
-                        Console.WriteLine($"{container.GetInstance<IAdd>().Compute(input)}");
+                        Console.WriteLine($"{container.GetInstance<IAdd>().Compute(Regex.Unescape(input))}");
                     }
                     catch (Exception e)
                     {

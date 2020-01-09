@@ -1,0 +1,12 @@
+.vs/
+TestResults/
+Calculator.Contracts/bin/
+Calculator.Contracts/obj/
+Calculator.Tests/bin/
+Calculator.Tests/obj/
+Calculator/bin/
+Calculator/obj/
+StringCalculator/bin/
+StringCalculator/obj/
+
+

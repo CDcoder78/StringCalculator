@@ -3,5 +3,7 @@
     public interface IParser
     {
         int[] ParseIntegers(string input);
+
+        string GetDelimiters();
     }
 }
