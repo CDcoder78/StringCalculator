@@ -9,5 +9,9 @@
         int[] ParseIntegers(string input);
 
         string GetDelimiters();
+
+        bool HandleCommand(string input);
+
+        string GetCommandText();
     }
 }

@@ -13,7 +13,9 @@ namespace StringCalculator
 *          String Calculator - exit: Ctrl+C           
 *          Supported: delimiters {0}        
 *          Mode: Addition                             
-*          Deny Negatives: {1}           Inputs Upper Bound: {2}                          
+*          Deny Negatives: {1}           Inputs Upper Bound: {2}
+*
+{3}
 *****************************************************************************************************";
 
         private static void Main(string[] args)
@@ -40,7 +42,7 @@ namespace StringCalculator
 
                 var parser = container.GetInstance<IParser>();
 
-                Console.WriteLine(_menuText, parser.GetDelimiters(), parser.DenyNegative, parser.UpperBound);
+                Console.WriteLine(_menuText, parser.GetDelimiters(), parser.DenyNegative, parser.UpperBound, parser.GetCommandText());
 
                 Console.ForegroundColor = defaultColor;
             }
@@ -57,12 +59,17 @@ namespace StringCalculator
 
                         if (input == null)
                             break;
-                        
-                        Console.WriteLine($"{container.GetInstance<IAdd>().Compute(Regex.Unescape(input))}");
+
+                        var unescapeInput = Regex.Unescape(input);
+
+                        if (!container.GetInstance<IParser>().HandleCommand(unescapeInput))
+                        {
+                            Console.WriteLine($"{container.GetInstance<IAdd>().Compute(unescapeInput)}");
+                        }
                     }
                     catch (Exception e)
                     {
-                        if (!done) Console.WriteLine(e);
+                        if (!done) Console.WriteLine($"{e.GetType()}: {e.Message}");
                     }
                 }
             }

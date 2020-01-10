@@ -11,6 +11,118 @@ namespace Calculator.Tests
     {
         private readonly IParser _target = new Parser();
 
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidHandleCommand()
+        {
+            _target.HandleCommand("-AddDelimiter:'1'");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidSpaceHandleCommand()
+        {
+            _target.HandleCommand("-AddDelimiter:' '");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidEmptyHandleCommand()
+        {
+            _target.HandleCommand("-AddDelimiter:''");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidCharsHandleCommand()
+        {
+            _target.HandleCommand("-AddDelimiter:'xxxx'");
+        }
+
+        [TestMethod]
+        public void ParserValidCharHandleCommand()
+        { ;
+            Assert.IsTrue(_target.HandleCommand("-AddDelimiter:'x'"));
+        }
+
+        [TestMethod]
+        public void ParserRemoveValidCharHandleCommand()
+        {
+            ;
+            Assert.IsTrue(_target.HandleCommand("-RemoveDelimiter:','"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserRemoveInvalidHandleCommand()
+        {
+            _target.HandleCommand("-RemoveDelimiter:'1'");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserRemoveInvalidSpaceHandleCommand()
+        {
+            _target.HandleCommand("-RemoveDelimiter:' '");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserRemoveInvalidEmptyHandleCommand()
+        {
+            _target.HandleCommand("-RemoveDelimiter:''");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserRemoveInvalidCharsHandleCommand()
+        {
+            _target.HandleCommand("-RemoveDelimiter:'xxxx'");
+        }
+
+        [TestMethod]
+        public void ParserDenyNegativesHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-DenyNegatives"));
+            Assert.IsTrue(_target.DenyNegative);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidUpperBoundsZeroHandleCommand()
+        {
+            _target.HandleCommand("-UpperBounds:0");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidUpperBoundsHandleCommand()
+        {
+            _target.HandleCommand("-UpperBounds:-1");
+        }
+
+        [TestMethod]
+        public void ParserValidUpperBoundsHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-UpperBounds:1"));
+            Assert.AreEqual(1u, _target.UpperBound);
+        }
+
+        [TestMethod]
+        public void ParserValidSpaceUpperBoundsHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-UpperBounds: 1"));
+            Assert.AreEqual(1u, _target.UpperBound);
+        }
+
+        [TestMethod]
+        public void ParserAllowNegativesHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-AllowNegatives"));
+            Assert.IsFalse(_target.DenyNegative);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ParserInvalidUpperBoundSetArgument()

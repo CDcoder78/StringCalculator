@@ -9,12 +9,19 @@ namespace Calculator
 {
     public class Parser : IParser
     {
+        private const string AddDelimiter = "AddDelimiter";
+        private const string RemoveDelimiter = "RemoveDelimiter";
+        private const string DenyNegatives = "DenyNegatives";
+        private const string AllowNegatives = "AllowNegatives";
+        private const string UpperBounds = "UpperBounds";
         private const char DefaultDelimiter = ',';
         private bool _denyNegative = true;
         private uint _upperBound = 1000;
 
         /// '\n' => "\\n" == on Windows Environment.NewLine is "\r\n"   
-        private char[] _delimiters;
+        private List<char> _delimiters;
+
+        private char[] _commandDelimiters = new[] {'-', ':'};
 
         public bool DenyNegative
         {
@@ -39,10 +46,8 @@ namespace Calculator
         public Parser()
         {
             var newline = Environment.NewLine.ToCharArray();
-            _delimiters = new char[newline.Length + 1 ];
-
-            Array.Copy(newline, _delimiters, newline.Length);
-            _delimiters[^1] = DefaultDelimiter;
+            _delimiters = new List<char>(newline);
+            _delimiters.Add(DefaultDelimiter);
         }
 
         public string GetDelimiters()
@@ -61,7 +66,7 @@ namespace Calculator
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
 
-            var strings = input.Split(_delimiters);
+            var strings = input.Split(_delimiters.ToArray());
 
             var negativeNumbers = _denyNegative ? new List<int>() : default(IList<int>);
 
@@ -89,6 +94,118 @@ namespace Calculator
             }
 
             return results;
+        }
+
+        public bool HandleCommand(string input)
+        {
+            bool HandleDelimiter(string argument, bool add)
+            {
+                var delimiter = GetCharArgument(argument);
+                if (delimiter.HasValue)
+                {
+                    if (add)
+                    {
+                        if (!_delimiters.Contains(delimiter.Value))
+                        {
+                            _delimiters.Add(delimiter.Value);
+                        }
+                    }
+                    else
+                    {
+                        _delimiters.RemoveAll(a => a == delimiter.Value);
+                    }
+                    
+                    return true;
+                }
+
+                return false;
+            }
+
+            var commandStrings = input.Split(_commandDelimiters);
+            
+            if (commandStrings.Length > 1)
+            {
+                switch (commandStrings[1])
+                {
+                    case AddDelimiter:
+                    case RemoveDelimiter:
+                        if (commandStrings.Length == 3 && 
+                            HandleDelimiter(commandStrings[2], commandStrings[1].Equals(AddDelimiter)))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case DenyNegatives:
+                        if (commandStrings.Length == 2)
+                        {
+                            DenyNegative = true;
+                            return true;
+                        }
+
+                        break;
+                    case AllowNegatives:
+                        if (commandStrings.Length == 2)
+                        {
+                            DenyNegative = false;
+                            return true;
+                        }
+
+                        break;
+                    case UpperBounds:
+                        if (commandStrings.Length == 3)
+                        {
+                            var upperBounds = GetUIntArgument(commandStrings[2]);
+
+                            if (upperBounds.HasValue)
+                            {
+                                UpperBound = upperBounds.Value;
+                                return true;
+                            }
+                        }
+                        
+                        break;
+                }
+
+                throw new ArgumentException($"Command Invalid: {input}");
+            }
+
+            return false;
+        }
+
+        public string GetCommandText()
+        {
+            return $@"*             Commands                            Usage
+*           {AddDelimiter}                       -{AddDelimiter}:'x' 
+*           {RemoveDelimiter}                    -{RemoveDelimiter}:'x'
+*           {DenyNegatives}                      -{DenyNegatives} 
+*           {AllowNegatives}                     -{AllowNegatives}
+*           {UpperBounds}                        -{UpperBounds}:1000";
+        }
+
+        private char? GetCharArgument(string argument)
+        {
+            if (argument.Length == 3 && 
+                argument[0] == '\'' &&
+                argument[2] == '\'')
+            {
+                if (argument[1] != ' ' && !int.TryParse(argument[1].ToString(), out var _ ))
+                {
+                    return argument[1];
+                }
+            }
+
+            return null;
+        }
+
+        private uint? GetUIntArgument(string argument)
+        {
+            if (uint.TryParse(argument, out var result))
+            {
+                return result;
+            }
+
+            return null;
         }
     }
 }
