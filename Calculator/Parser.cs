@@ -11,11 +11,30 @@ namespace Calculator
     {
         private const char DefaultDelimiter = ',';
         private bool _denyNegative = true;
+        private uint _upperBound = 1000;
 
         /// '\n' => "\\n" == on Windows Environment.NewLine is "\r\n"   
         private char[] _delimiters;
 
-        public bool DenyNegative => _denyNegative;
+        public bool DenyNegative
+        {
+            get => _denyNegative;
+            set => _denyNegative = value;
+        }
+
+        public uint UpperBound
+        {
+            get => _upperBound;
+            set
+            {
+                if (value == 0)
+                {
+                    throw new ArgumentException($"Invalid upper bound value: {value}");
+                }
+
+                _upperBound = value;
+            }
+        }
 
         public Parser()
         {
@@ -56,6 +75,11 @@ namespace Calculator
                         negativeNumbers?.Add(result);
                     }
 
+                    if (_upperBound >= 1 && result > _upperBound)
+                    {
+                        return 0;
+                    }
+
                     return result;
                 }).ToArray();
 
@@ -65,11 +89,6 @@ namespace Calculator
             }
 
             return results;
-        }
-
-        public void SetDenyNegative(bool state)
-        {
-            _denyNegative = state;
         }
     }
 }

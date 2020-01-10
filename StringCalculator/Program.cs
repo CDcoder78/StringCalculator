@@ -9,11 +9,12 @@ namespace StringCalculator
     public class Program
     {
         private const string _menuText =
-            @"**********************************************
-* String Calculator - exit: Ctrl+C           *
-* Supported: delimiters {0}        *
-* Mode: Addition                             *
-**********************************************";
+            @"*****************************************************************************************************
+*          String Calculator - exit: Ctrl+C           
+*          Supported: delimiters {0}        
+*          Mode: Addition                             
+*          Deny Negatives: {1}           Inputs Upper Bound: {2}                          
+*****************************************************************************************************";
 
         private static void Main(string[] args)
         {
@@ -37,7 +38,9 @@ namespace StringCalculator
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
-                Console.WriteLine(_menuText, container.GetInstance<IParser>().GetDelimiters());
+                var parser = container.GetInstance<IParser>();
+
+                Console.WriteLine(_menuText, parser.GetDelimiters(), parser.DenyNegative, parser.UpperBound);
 
                 Console.ForegroundColor = defaultColor;
             }

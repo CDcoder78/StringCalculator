@@ -2,12 +2,12 @@
 {
     public interface IParser
     {
-        bool DenyNegative { get; }
+        bool DenyNegative { get; set; }
+
+        uint UpperBound{ get; set; }
 
         int[] ParseIntegers(string input);
 
         string GetDelimiters();
-
-        void SetDenyNegative(bool state);
     }
 }

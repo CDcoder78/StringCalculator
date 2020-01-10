@@ -12,6 +12,43 @@ namespace Calculator.Tests
         private readonly IParser _target = new Parser();
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParserInvalidUpperBoundSetArgument()
+        {
+            _target.UpperBound = 0;
+        }
+
+        [TestMethod]
+        public void ParserUpperBoundGet()
+        {
+            Assert.AreEqual(1000u, _target.UpperBound);
+        }
+
+        [TestMethod]
+        public void ParserValidUpperBoundSet()
+        {
+            _target.UpperBound = 1;
+
+            Assert.AreEqual(1u, _target.UpperBound);
+        }
+
+        [TestMethod]
+        public void ParserDenyNegativeSetTrue()
+        {
+            _target.DenyNegative = true;
+
+            Assert.AreEqual(true, _target.DenyNegative);
+        }
+
+        [TestMethod]
+        public void ParserDenyNegativeSetFalse()
+        {
+            _target.DenyNegative = false;
+
+            Assert.AreEqual(false, _target.DenyNegative);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(NegativeNumbersException))]
         public void ParserTestOneNegative()
         {
