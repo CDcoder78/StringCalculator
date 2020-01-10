@@ -10,9 +10,12 @@ namespace Calculator
     public class Parser : IParser
     {
         private const char DefaultDelimiter = ',';
+        private bool _denyNegative = true;
 
         /// '\n' => "\\n" == on Windows Environment.NewLine is "\r\n"   
         private char[] _delimiters;
+
+        public bool DenyNegative => _denyNegative;
 
         public Parser()
         {
@@ -41,12 +44,32 @@ namespace Calculator
 
             var strings = input.Split(_delimiters);
 
-            return strings.Select(
+            var negativeNumbers = _denyNegative ? new List<int>() : default(IList<int>);
+
+            var results = strings.Select(
                 a =>
                 {
                     int.TryParse(a, out var result);
+
+                    if (result < 0)
+                    {
+                        negativeNumbers?.Add(result);
+                    }
+
                     return result;
                 }).ToArray();
+
+            if (negativeNumbers?.Count > 0)
+            {
+                throw new NegativeNumbersException(negativeNumbers);
+            }
+
+            return results;
+        }
+
+        public void SetDenyNegative(bool state)
+        {
+            _denyNegative = state;
         }
     }
 }

@@ -12,6 +12,27 @@ namespace Calculator.Tests
         private readonly IParser _target = new Parser();
 
         [TestMethod]
+        [ExpectedException(typeof(NegativeNumbersException))]
+        public void ParserTestOneNegative()
+        {
+            _target.ParseIntegers("-1");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NegativeNumbersException))]
+        public void ParserTestOneNegativeOnePositive()
+        {
+            _target.ParseIntegers("-1,1");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NegativeNumbersException))]
+        public void ParserTestOneNegativeOnePositive1()
+        {
+            _target.ParseIntegers("-1\n1");
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ParserTestInvalidArgument()
         {
