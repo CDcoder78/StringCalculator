@@ -66,7 +66,16 @@ namespace Calculator
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
 
-            var strings = input.Split(_delimiters.ToArray());
+            var customDelimiters = default(char[]);
+
+            if (input.Length >= 4 && input.StartsWith("//") && input[3] == '\n')
+            {
+                customDelimiters = new char[] {input[2]};
+
+                input = input.Substring(4);
+            }
+
+            var strings = input.Split(customDelimiters ?? _delimiters.ToArray());
 
             var negativeNumbers = _denyNegative ? new List<int>() : default(IList<int>);
 

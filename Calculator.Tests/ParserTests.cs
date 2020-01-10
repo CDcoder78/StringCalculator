@@ -342,5 +342,28 @@ namespace Calculator.Tests
                 Assert.AreEqual(1, results[i]);
             }
         }
+
+        [TestMethod]
+        public void ParserCustomArguments()
+        {
+            var input = "//#\n2#5";
+            var results = _target.ParseIntegers(input);
+
+            Assert.AreEqual(2, results.Length);
+            Assert.AreEqual(2, results[0]);
+            Assert.AreEqual(5, results[1]);
+        }
+
+        [TestMethod]
+        public void ParserCustom1Arguments()
+        {
+            var input = "//,\n2,ff,100";
+            var results = _target.ParseIntegers(input);
+
+            Assert.AreEqual(3, results.Length);
+            Assert.AreEqual(2, results[0]);
+            Assert.AreEqual(0, results[1]);
+            Assert.AreEqual(100, results[2]);
+        }
     }
 }
