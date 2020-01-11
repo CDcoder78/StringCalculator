@@ -5,17 +5,17 @@ using Calculator.Contracts;
 
 namespace Calculator
 {
-    public class Add : IAdd
+    public class Subtraction : ISubtraction
     {
-        private const char AdditionSymbol = '+';
+        private const char SubtractionSymbol = '-';
         private const char EqualsSymbol = '=';
         private readonly IParser _parser;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Add" /> class.
+        ///     Initializes a new instance of the <see cref="Subtraction" /> class.
         /// </summary>
         /// <param name="parser">String parser instance.</param>
-        public Add(IParser parser)
+        public Subtraction(IParser parser)
         {
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
         }
@@ -30,13 +30,13 @@ namespace Calculator
             var args = _parser.ParseIntegers(input);
             var result = args[0];
             var formula = new StringBuilder();
-            formula.Append(args[0]);
+            formula.Append(args[0]);            
             for (var i = 1; i < args.Length; ++i)
             {
-                formula.Append(AdditionSymbol);
+                formula.Append(SubtractionSymbol);
                 formula.Append(args[i]);
 
-                result += args[i];
+                result -= args[i];
             }
 
             // Stretch goal #1 formula with result

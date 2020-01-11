@@ -2,6 +2,8 @@
 {
     public interface IParser
     {
+        ComputeTypes CurrentMode { get; }
+
         bool DenyNegative { get; set; }
 
         uint UpperBound{ get; set; }

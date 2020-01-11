@@ -9,6 +9,7 @@ namespace Calculator
 {
     public class Parser : IParser
     {
+        private const string Mode = "Mode";
         private const string AddDelimiter = "AddDelimiter";
         private const string RemoveDelimiter = "RemoveDelimiter";
         private const string DenyNegatives = "DenyNegatives";
@@ -17,11 +18,18 @@ namespace Calculator
         private const char DefaultDelimiter = ',';
         private bool _denyNegative = true;
         private uint _upperBound = 1000;
+        private ComputeTypes _currentMode = ComputeTypes.Add;
 
         /// '\n' => "\\n" == on Windows Environment.NewLine is "\r\n"   
         private List<char> _delimiters;
 
         private char[] _commandDelimiters = new[] {'-', ':'};
+
+        public ComputeTypes CurrentMode
+        {
+            get => _currentMode;
+            private set => _currentMode = value;
+        }
 
         public bool DenyNegative
         {
@@ -190,7 +198,15 @@ namespace Calculator
                                 return true;
                             }
                         }
-                        
+
+                        break;
+                    case Mode:
+                        if (commandStrings.Length == 3)
+                        {
+                            _currentMode = (ComputeTypes)Enum.Parse(typeof(ComputeTypes), commandStrings[2]);
+                            return true;
+                        }
+
                         break;
                 }
 
@@ -203,6 +219,10 @@ namespace Calculator
         public string GetCommandText()
         {
             return $@"*             Commands                            Usage
+*           {Mode}                               -{Mode}:{ComputeTypes.Add}
+*                                                -{Mode}:{ComputeTypes.Subtract}
+*                                                -{Mode}:{ComputeTypes.Division}
+*                                                -{Mode}:{ComputeTypes.Multiplication}
 *           {AddDelimiter}                       -{AddDelimiter}:'x' 
 *           {RemoveDelimiter}                    -{RemoveDelimiter}:'x'
 *           {DenyNegatives}                      -{DenyNegatives} 

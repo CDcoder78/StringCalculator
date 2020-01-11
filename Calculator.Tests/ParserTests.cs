@@ -11,7 +11,6 @@ namespace Calculator.Tests
     {
         private readonly IParser _target = new Parser();
 
-
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ParserInvalidHandleCommand()
@@ -62,6 +61,13 @@ namespace Calculator.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
+        public void ParserModeInvalidHandleCommand()
+        {
+            _target.HandleCommand("-Mode:''");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
         public void ParserRemoveInvalidSpaceHandleCommand()
         {
             _target.HandleCommand("-RemoveDelimiter:' '");
@@ -107,6 +113,34 @@ namespace Calculator.Tests
         {
             Assert.IsTrue(_target.HandleCommand("-UpperBounds:1"));
             Assert.AreEqual(1u, _target.UpperBound);
+        }
+
+        [TestMethod]
+        public void ParserValidModeAddHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-Mode:Add"));
+            Assert.AreEqual(ComputeTypes.Add, _target.CurrentMode);
+        }
+
+        [TestMethod]
+        public void ParserValidModeSubtractHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-Mode:Subtract"));
+            Assert.AreEqual(ComputeTypes.Subtract, _target.CurrentMode);
+        }
+
+        [TestMethod]
+        public void ParserValidModeDivideHandleCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-Mode:Division"));
+            Assert.AreEqual(ComputeTypes.Division, _target.CurrentMode);
+        }
+
+        [TestMethod]
+        public void ParserValidModeAddMutiplicationCommand()
+        {
+            Assert.IsTrue(_target.HandleCommand("-Mode:Multiplication"));
+            Assert.AreEqual(ComputeTypes.Multiplication, _target.CurrentMode);
         }
 
         [TestMethod]
