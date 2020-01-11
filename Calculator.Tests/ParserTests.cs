@@ -376,5 +376,18 @@ namespace Calculator.Tests
             Assert.AreEqual(22, results[1]);
             Assert.AreEqual(33, results[2]);
         }
+
+        [TestMethod]
+        public void ParserCustom3Arguments()
+        {
+            var input = "//[*][!!][r9r]\n11r9r22*hh*33!!44";
+            var results = _target.ParseIntegers(input);
+            Assert.AreEqual(5, results.Length);
+            Assert.AreEqual(11, results[0]);
+            Assert.AreEqual(22, results[1]);
+            Assert.AreEqual(0, results[2]);
+            Assert.AreEqual(33, results[3]);
+            Assert.AreEqual(44, results[4]);
+        }
     }
 }

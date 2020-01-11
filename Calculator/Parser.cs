@@ -70,13 +70,19 @@ namespace Calculator
             string [] strings = default(string[]);
 
             var singleCharPattern = @"^//\S\n";
-            var singlePattern = @"^//\[\S+\]\n";
-            if (Regex.IsMatch(input, singlePattern))
+            var multiPattern = @"^//(\[\S+\]+)\n";
+            if (Regex.IsMatch(input, multiPattern))
             {
-                var split = input.Split(new char []{'[', ']'});
-                var delimiter = split[1];
-                input = split[2].Substring(1);
-                strings = input.Split(delimiter, StringSplitOptions.RemoveEmptyEntries); 
+                var split = input.Split(new char []{'[', ']'}, StringSplitOptions.RemoveEmptyEntries);
+                var delimiters = new List<string>();
+                int i = 0;
+                while (!split[++i].StartsWith("\n"))
+                {
+                    delimiters.Add(split[i]);
+                }
+
+                input = split[i].Substring(1);
+                strings = input.Split(delimiters.ToArray(), StringSplitOptions.RemoveEmptyEntries); 
             }
             else if (Regex.IsMatch(input, singleCharPattern))
             {
