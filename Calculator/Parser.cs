@@ -67,15 +67,27 @@ namespace Calculator
             if (input == null) throw new ArgumentNullException(nameof(input));
 
             var customDelimiters = default(char[]);
+            string [] strings = default(string[]);
 
-            if (input.Length >= 4 && input.StartsWith("//") && input[3] == '\n')
+            var singleCharPattern = @"^//\S\n";
+            var singlePattern = @"^//\[\S+\]\n";
+            if (Regex.IsMatch(input, singlePattern))
             {
-                customDelimiters = new char[] {input[2]};
-
+                var split = input.Split(new char []{'[', ']'});
+                var delimiter = split[1];
+                input = split[2].Substring(1);
+                strings = input.Split(delimiter, StringSplitOptions.RemoveEmptyEntries); 
+            }
+            else if (Regex.IsMatch(input, singleCharPattern))
+            {
+                customDelimiters = new char[] { input[2] };
                 input = input.Substring(4);
             }
 
-            var strings = input.Split(customDelimiters ?? _delimiters.ToArray());
+            if(strings == default(string[]))
+            {
+                strings = input.Split(customDelimiters ?? _delimiters.ToArray());
+            }
 
             var negativeNumbers = _denyNegative ? new List<int>() : default(IList<int>);
 

@@ -365,5 +365,16 @@ namespace Calculator.Tests
             Assert.AreEqual(0, results[1]);
             Assert.AreEqual(100, results[2]);
         }
+
+        [TestMethod]
+        public void ParserCustom2Arguments()
+        {
+            var input = "//[***]\n11***22***33";
+            var results = _target.ParseIntegers(input);
+            Assert.AreEqual(3, results.Length);
+            Assert.AreEqual(11, results[0]);
+            Assert.AreEqual(22, results[1]);
+            Assert.AreEqual(33, results[2]);
+        }
     }
 }
